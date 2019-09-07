@@ -1,6 +1,7 @@
 import logging
 from homeassistant.components.lock import ENTITY_ID_FORMAT, LockDevice
 from homeassistant.util import convert
+from .constants import *
 
 from . import RINGALARM_DEVICES
     #RingAlarmDevice
@@ -15,6 +16,7 @@ from homeassistant.const import (
     STATE_UNLOCKED,
 )
 
+"""
 DEVICE_BATTERY_LEVEL = 'general.v2.batteryLevel'
 DEVICE_ZID = 'general.v2.zid'
 DEVICE_NAME = 'general.v2.name'
@@ -33,6 +35,7 @@ DEVICE_MAPPED_TYPE = 'custom.mapped_type'
 DEVICE_LOCKED = 'device.v1.locked'
 DEVICE_LOCKED_BY = 'impulse.v1.impulseType'
 DEVICE_SOURCE = 'custom.device.source'
+"""
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,11 +43,6 @@ _LOGGER = logging.getLogger(__name__)
 def setup_platform(hass, config, add_devices, device):
     # for index, device in devices.iterrows():
     add_devices([RingAlarmLock(device)], True)
-
-
-def create_entity(device_frame):
-    _add_devices([RingAlarmLock(device_frame)], True)
-
 
 class RingAlarmLock(RingAlarmDevice, LockDevice):
 
@@ -68,7 +66,7 @@ class RingAlarmLock(RingAlarmDevice, LockDevice):
     def update(self):
         pass
 
-    def _update_callback(self, data):
+    def update_callback(self, data):
         try:
             self._state = data[DEVICE_LOCKED]
             self._is_locked = data[DEVICE_LOCKED]

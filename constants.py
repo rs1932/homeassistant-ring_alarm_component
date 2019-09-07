@@ -30,12 +30,15 @@ DEVICE_CALLBACK = 'custom.device.callback'
 DEVICE_SMOKE_STATUS = 'device.v1.alarmstatus'
 DEVICE_LOCKED_BY = 'impulse.v1.impulseType'
 DEVICE_ALARM_MODE = 'device.v1.mode'
+DEVICE_UPDATE_ON = 'context.v1.device.v1.on'
 
+LOCATION_NAME = 'custom.location.name'
 
 ATTR_TAMPERSTATUS = "tamper status"
 ATTR_ZID = "zid"
 ATTR_LASTUPDATE = "last updated"
 ATTR_RSSI_LEVEL = "signal strength"
+ATTR_LOCATION_NAME = "location"
 
 
 

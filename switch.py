@@ -8,30 +8,12 @@ from homeassistant.util import convert
 
 from . import RINGALARM_DEVICES
 from .ringalarmdevice import RingAlarmDevice
-
-DEVICE_ZID = 'general.v2.zid'
-DEVICE_NAME = 'general.v2.name'
-DEVICE_DOORBOT_ID = 'general.v2.doorbotId'
-DEVICE_BATTERY_STATUS = 'general.v2.batteryStatus'
-DEVICE_TYPE = 'general.v2.deviceType'
-DEVICE_LAST_UPDATE = 'general.v2.lastUpdate'
-DEVICE_ROOM_ID = 'general.v2.roomId'
-DEVICE_TAMPER_STATUS = 'general.v2.tamperStatus'
-DEVICE_RSSI = 'device.v1.networks.wlan0.rssi'
-DEVICE_ON = 'device.v1.on'
-DEVICE_UPDATE_ON = 'context.v1.device.v1.on'
-DEVICE_MOTION_STATUS = 'device.v1.motionStatus'
-DEVICE_FAULTED = 'device.v1.faulted'
-DEVICE_CONTROLLER = 'custom.controller'
-DEVICE_MAPPED_TYPE = 'custom.mapped_type'
-DEVICE_BATTERY_LEVEL = 'general.v2.batteryLevel'
-DEVICE_SOURCE = 'custom.device.source'
+from .constants import *
 
 _LOGGER = logging.getLogger(__name__)
 
 
 def setup_platform(hass, config, add_devices, device):
-    # for index, device in devices.iterrows():
     add_devices([RingAlarmSwitch(device)], True)
 
 
@@ -39,8 +21,6 @@ class RingAlarmSwitch(RingAlarmDevice, SwitchDevice):
     def __init__(self, ringalarm_device):
         super().__init__(ringalarm_device)
         self._state = ringalarm_device[DEVICE_ON]
-        self._battery_level = ringalarm_device[DEVICE_BATTERY_LEVEL]
-        self._tamper_status = ringalarm_device[DEVICE_TAMPER_STATUS]
 
     def turn_on(self, **kwargs):
         try:
@@ -65,7 +45,7 @@ class RingAlarmSwitch(RingAlarmDevice, SwitchDevice):
     def update(self):
         pass
 
-    def _update_callback(self, data):
+    def update_callback(self, data):
         try:
             self._state = data[DEVICE_UPDATE_ON]
         except:

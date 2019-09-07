@@ -55,7 +55,7 @@ class RingAlarmBinarySensor(RingAlarmDevice, BinarySensorDevice):
 
     def __init__(self, ringalarm_device):
         self._state = False
-        self.callback = None
+        self._callback = None
         super().__init__(ringalarm_device)
         self._state = check_sensor_status(ringalarm_device)
         stype = None
@@ -81,8 +81,8 @@ class RingAlarmBinarySensor(RingAlarmDevice, BinarySensorDevice):
     def update(self):
         pass
 
-    def _update_callback(self, device):
-
+    def update_callback(self, device):
+        print("UPDATE CALLBACK")
         try:
             if device[DEVICE_TYPE] in ['alarm.smoke', 'alarm.co']:
                 if device[DEVICE_SMOKE_STATUS] == 'inactive':

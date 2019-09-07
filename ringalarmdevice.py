@@ -1,12 +1,10 @@
-"""Base class for  devices."""
+import datetime
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-import datetime
-from homeassistant.const import ATTR_BATTERY_LEVEL
+
 
 from .constants import *
-
 
 class RingAlarmDevice(Entity):
     """Representation of a RingAlarm device entity."""
@@ -14,10 +12,11 @@ class RingAlarmDevice(Entity):
     def __init__(self, ringalarm_device):
         self.ringalarm_device = ringalarm_device
         self.controller = ringalarm_device[DEVICE_CONTROLLER]
+        self.location_name = self.controller.get_location_name()
         self._zid = ringalarm_device[DEVICE_ZID]
         self._name = ringalarm_device[DEVICE_NAME]
         self._entity_id = self._zid
-        self.controller.register(self._zid, self._callback)
+        self.controller.register(self._zid, self.callback)
 
         self._last_update = datetime.datetime.fromtimestamp(ringalarm_device[DEVICE_LAST_UPDATE] // 1000).strftime(
             '%A %d, %B %Y %H:%M:%S')
@@ -35,7 +34,7 @@ class RingAlarmDevice(Entity):
             pass
 
     @callback
-    def _callback(self, data):
+    def callback(self, data):
         try:
             self._last_update = datetime.datetime.fromtimestamp(data[DEVICE_LAST_UPDATE] // 1000).strftime(
                 '%A %d, %B %Y %H:%M:%S')
@@ -55,11 +54,10 @@ class RingAlarmDevice(Entity):
         except:
             pass
 
-        self._update_callback(data)
+        self.update_callback(data)
 
     @property
     def name(self):
-        """Return the name of the sensor."""
         return self._name
 
     @property
@@ -71,7 +69,6 @@ class RingAlarmDevice(Entity):
 
     @property
     def device_state_attributes(self):
-
         attr = {}
         if self._tamper_status:
             try:
@@ -88,13 +85,14 @@ class RingAlarmDevice(Entity):
                 attr[ATTR_BATTERY_LEVEL] = self._battery_level
             except:
                 pass
-        # if not isNaN(self._device_rssi):
-        #    attr[ATTR_RSSI_LEVEL] = self._device_rssi
+
         if not isNaN(self._last_update):
             try:
                 attr[ATTR_LASTUPDATE] = self._last_update
             except:
                 pass
+
+        attr[ATTR_LOCATION_NAME] = self.location_name
         return attr
 
 

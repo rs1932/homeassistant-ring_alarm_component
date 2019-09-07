@@ -1,20 +1,21 @@
 import json
 import logging
-import numpy as np
-import pandas as pd
-import requests
+# import numpy as np
+#
+# import requests
+# import socketio
 import socketio
-from pandas.io.json import json_normalize
+
+# pd.set_option('display.max_columns', 500)  # or 1000
+# pd.set_option('display.max_rows', 100)  # or 1000
+# pd.set_option('display.max_colwidth', -1)  # or 199
+#from pandas.io.json import json_normalize
 
 from .constants import *
 
-pd.set_option('display.max_columns', 500)  # or 1000
-pd.set_option('display.max_rows', 100)  # or 1000
-pd.set_option('display.max_colwidth', -1)  # or 199
-
 _LOGGER = logging.getLogger(__name__)
 
-_ringalarm_devices = pd.DataFrame()
+
 ringalarm_devices_list = []
 
 required_columns = [DEVICE_ZID, DEVICE_NAME, DEVICE_BATTERY_STATUS, DEVICE_BATTERY_LEVEL, DEVICE_TYPE, \
@@ -24,11 +25,35 @@ required_columns = [DEVICE_ZID, DEVICE_NAME, DEVICE_BATTERY_STATUS, DEVICE_BATTE
 
 custom_columns = [DEVICE_CONTROLLER, DEVICE_MAPPED_TYPE, DEVICE_SOURCE, DEVICE_CALLBACK]
 
-class RingLocations(object):
-    def __init__(self, username, password):
-        # , **kwargs):
-        self.username = username
-        self.password = password
+
+def get_oauth_token(username, password):
+    import requests
+    import socketio
+
+    data = {'username': username, 'grant_type': 'password', 'scope': 'client',
+            'client_id': 'ring_official_android', 'password': password}
+    response = requests.post(OATH_ENDPOINT, data=data)
+    statusCode = response.status_code
+    oauth_token = None
+    responseJSON = response.json()
+    if statusCode == 200:
+        oauth_token = responseJSON.get('access_token', None)
+        _LOGGER.info("Oauth Token obtained")
+    return oauth_token
+
+
+def get_locations(oauth_token):
+    import requests
+    data = {}
+    headers = {'content-type': 'application/x-www-form-urlencoded', 'authorization': 'Bearer ' + oauth_token}
+    response = requests.get(LOCATIONS_ENDPOINT, data=data, headers=headers).json()
+    user_locations = response.get('user_locations', None)
+    _LOGGER.info("User locations are " + str(user_locations))
+    return user_locations
+
+
+class RingLocation(object):
+    def __init__(self, oauth_token):
         self.is_connected = False
         self.token = None
         self.params = None
@@ -37,7 +62,8 @@ class RingLocations(object):
         self.hubs_devices_obtained = 0
         self.locations = []
         self.location_id = None
-        self.token = self._get_oauth_token()
+        self.token = oauth_token
+        #self.token = self.get_oauth_token()
         self.sio=None
         if (self.token):
             self.is_connected = True
@@ -45,26 +71,6 @@ class RingLocations(object):
     def set_callbacks(self, **kwargs):
         self.async_add_device_callback = kwargs.get('async_add_device')
         self.async_update_device_callback = kwargs.get('async_update_device')
-
-    def _get_oauth_token(self):
-        data = {'username': self.username, 'grant_type': 'password', 'scope': 'client',
-                'client_id': 'ring_official_android', 'password': self.password}
-        response = requests.post(OATH_ENDPOINT, data=data)
-        statusCode = response.status_code
-        oauth_token = None
-        responseJSON = response.json()
-        if statusCode == 200:
-            oauth_token = responseJSON.get('access_token', None)
-            _LOGGER.info("Oauth Token obtained")
-        return oauth_token
-
-    def get_locations(self):
-        data = {}
-        headers = {'content-type': 'application/x-www-form-urlencoded', 'authorization': 'Bearer ' + self.token}
-        response = requests.get(LOCATIONS_ENDPOINT, data=data, headers=headers).json()
-        user_locations = response.get('user_locations', None)
-        _LOGGER.info("User locations are " + str(user_locations))
-        return user_locations
 
     def send_command_ring(self, zid, dst, cmd, data={}):
         _payload = {
@@ -89,6 +95,7 @@ class RingLocations(object):
         self.sio.emit("message", _payload)
 
     def get_devices(self, location_id):
+        #import socketio
         hubs = RingHubs(location_id, self.token)
         self.sio = socketio.Client()
         self.sio.connect(hubs.wss_url, transports='websocket')
@@ -129,6 +136,7 @@ class RingLocations(object):
         def message(data):
             # print ("DATA IS ", data)
             # print(json.dumps(data, indent=4))
+            import pandas as pd
             if data['msg'] == 'DeviceInfoSet':
                 pass
             else:
@@ -151,6 +159,7 @@ class RingHubs(object):
     hubsList = []
 
     def __init__(self, location_id, oath_token):
+        import requests
         data = {}
         HUB_HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'authorization': 'Bearer ' + oath_token,
                        'user-agent': 'android:com.ringapp:2.0.67(423)'}
@@ -166,6 +175,7 @@ class RingHubs(object):
 
 
 def _build_initial_entity_list(received_data):
+    from pandas.io.json import json_normalize
     _hubID = received_data['src']
     ringalarm_devices = json_normalize(received_data['body'])
     ringalarm_devices.loc[:, DEVICE_SOURCE] = _hubID
@@ -173,6 +183,7 @@ def _build_initial_entity_list(received_data):
 
 
 def _build_update_entity_list(received_data):
+    from pandas.io.json import json_normalize
     _hubID = received_data['src']
     updated_devices = json_normalize(received_data['body'])
     return updated_devices

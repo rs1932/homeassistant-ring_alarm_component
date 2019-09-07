@@ -18,6 +18,7 @@ from homeassistant.const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
 def setup_platform(hass, config, add_devices, device):
     # for index, device in devices.iterrows():
     add_devices([RingAlarmControlPanel(device)], True)
@@ -63,6 +64,7 @@ class RingAlarmControlPanel(RingAlarmDevice, AlarmControlPanel):
 
     def alarm_arm_home(self, code=None):
         """Send arm home command."""
+
         try:
             self.controller.ring_api.send_command_ring(self.ringalarm_device[DEVICE_ZID],
                                                        self.ringalarm_device[DEVICE_SOURCE],
@@ -81,7 +83,7 @@ class RingAlarmControlPanel(RingAlarmDevice, AlarmControlPanel):
         except:
             pass
 
-    def _update_callback(self, data):
+    def update_callback(self, data):
         try:
             if data[DEVICE_ALARM_MODE] == "none":
                 self._state = STATE_ALARM_DISARMED
