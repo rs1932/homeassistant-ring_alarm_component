@@ -21,6 +21,7 @@ To be added in the configuration.yaml file, username/password is the ring alarm 
 These are the devices supported in the Ring Alarm:
 - Ring lighting
     - Floodlight wired
+        - Creates 1 binary sensor for motion detection and 1 switch for the lights
     - Motion sensor
     - Transformer
     - Others might work but can't test
