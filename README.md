@@ -1,7 +1,7 @@
-# Ring alarm component
+**Ring alarm component**
 Custom Component for integration with Home Assistant
 
-#Installation
+**Installation**
 1. Open the directory for your HA configuration where the configuration.yaml file exists
 2. If you do not have a custom_components directory (folder) there, you need to create it
 3. In the custom_components directory (folder) create a new folder called ring_alarm
@@ -9,8 +9,7 @@ Custom Component for integration with Home Assistant
 5. Place the files you downloaded in the new directory (ring_alarm) you created
 6. Restart Home Assistant
  
-
-#Configuration
+**Configuration**
 To be added in the configuration.yaml file, this is your ring alarm username and password
 
     # configuration.yaml entry
@@ -18,7 +17,7 @@ To be added in the configuration.yaml file, this is your ring alarm username and
       username: 'username'
       password: 'password'
 
-#Features
+**Features**
 These are the devices supported in the Ring Alarm and need more extensive testing
 - Ring lighting
     - Floodlight wired
@@ -40,7 +39,7 @@ In addition the following attributes are available:
 - ZID (its a unique id that each Ring device has)
 - Last update received from the device
  
-#Issues
+**Issues**
 This component uses some other python modules, all of them install automatically except for python-socketio which I install within the component. 
 Once I trace the problem will try to remove the manual installation. Not sure if this creates problems in Hassio since i use the installed python to install the pip modules
 
