@@ -1,15 +1,7 @@
 import json
 import logging
-# import numpy as np
-#
-# import requests
-# import socketio
-import socketio
 
-# pd.set_option('display.max_columns', 500)  # or 1000
-# pd.set_option('display.max_rows', 100)  # or 1000
-# pd.set_option('display.max_colwidth', -1)  # or 199
-#from pandas.io.json import json_normalize
+import socketio
 
 from .constants import *
 
