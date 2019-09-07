@@ -110,24 +110,20 @@ class RingLocation(object):
         @self.sio.event
         def DataUpdate(data):
 
-            # print(json.dumps(data, indent=4))
             if data["datatype"] == 'HubDisconnectionEventType':
                 print ("Hub is is disconnected")
             try:
                 if data["datatype"] == "DeviceInfoDocType":
-                    # print(json.dumps(data, indent=4))
                     entity_dict = {}
                     if self.async_update_device_callback:
                         updated_entities = _build_update_entity_list(data)
-                        # print ("Updates","-->", updated_entities[DEVICE_ZID],updated_entities[DEVICE_NAME])
                         self.async_update_device_callback(updated_entities)
             except KeyError:
                 pass
 
         @self.sio.event
         def message(data):
-            # print ("DATA IS ", data)
-            # print(json.dumps(data, indent=4))
+
             import pandas as pd
             if data['msg'] == 'DeviceInfoSet':
                 pass
