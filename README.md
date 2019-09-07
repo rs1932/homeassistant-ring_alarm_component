@@ -10,7 +10,7 @@ Custom Component for integration with Home Assistant
 6. Restart Home Assistant
  
 # Configuration
-To be added in the configuration.yaml file, this is your ring alarm username and password
+To be added in the configuration.yaml file, username/password is the ring alarm username and password
 
     # configuration.yaml entry
     ring_alarm:     
@@ -40,7 +40,14 @@ In addition the following attributes are available:
 - Last update received from the device
  
 # Issues
-This component uses some other python modules, all of them install automatically except for python-socketio which I install within the component. 
+1. This component uses some other python modules, all of them install automatically except for python-socketio which I install within the component. 
 Once I trace the problem will try to remove the manual installation. Not sure if this creates problems in Hassio since i use the installed python to install the pip modules
+2. Needs more extensive error checking, working on it
+3. Recoverability is not good, when for example the Ring Alarm goes into cellular back or is offline when initially trying to connect
+4. Assume there needs to be more extensive testing and not be dependent solely on the status produced by this compoonent
+5. While I have support for multiple locations/alarms have not tested it out. 
+6. This is first attempt at Home Assistant component programming and learning python at the same time, so I expect coding standards will be terrible!
 
-Assume these are all in need of extensive testing and not be dependent solely on the status produced by this compoonent
+# Credits
+There are multiple people out there from whose code I learnt a lot especially on the ring api. Specifically, would like to call out:
+- https://github.com/dgreif/ring
