@@ -68,8 +68,7 @@ class RingAlarmBinarySensor(RingAlarmDevice, BinarySensorDevice):
         else:
             self._device_class = None
             self._icon = None
-        return True
-
+        
     @property
     def device_class(self):
         """Return the device class of the sensor."""
