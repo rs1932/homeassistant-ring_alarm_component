@@ -24,6 +24,7 @@ SENSOR_TYPES = {
 
 
 def setup_platform(hass, config, add_devices, device):
+    print("Component Binary Sensor is being added !", device)
     add_devices([RingAlarmBinarySensor(device)], True)
 
 
