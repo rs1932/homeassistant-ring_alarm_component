@@ -86,6 +86,11 @@ class RingLocation(object):
         }
         self.sio.emit("message", _payload)
 
+    def get_assets(self):
+        print("")
+
+
+
     def get_devices(self, location_id):
         #import socketio
         hubs = RingHubs(location_id, self.token)
