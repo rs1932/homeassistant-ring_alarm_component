@@ -24,7 +24,7 @@ SENSOR_TYPES = {
 
 
 def setup_platform(hass, config, add_devices, device):
-    print("Component Binary Sensor is being added !", device)
+    # print("Component Binary Sensor is being added !", device)
     add_devices([RingAlarmBinarySensor(device)], True)
 
 
@@ -68,7 +68,7 @@ class RingAlarmBinarySensor(RingAlarmDevice, BinarySensorDevice):
         else:
             self._device_class = None
             self._icon = None
-        
+
     @property
     def device_class(self):
         """Return the device class of the sensor."""

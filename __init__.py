@@ -123,7 +123,8 @@ class RingLocationController():
         self._device_map = {}
         self.entities_data = entities_data
         _LOGGER.info("Total number of Ring Alarm devices: " + str(len(entities_data.index)))
-
+        print("Raw List of all devices obtained from Ring")
+        print(entities_data[DEVICE_NAME])
         for i in custom_columns:
             self.entities_data[i] = None
         self.add_custom_fields(self.entities_data)
